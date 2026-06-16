@@ -1434,19 +1434,25 @@
   function handlePricingForm(e) {
     e.preventDefault();
     const email = e.target.querySelector('input[type=email]').value;
-    submitEmail(email, 'pricing-success', e.target);
+    const nameInput = e.target.querySelector('input[type=text]');
+    const name = nameInput ? nameInput.value : '';
+    submitEmail(email, 'pricing-success', e.target, name);
   }
   function handleFinalForm(e) {
     e.preventDefault();
     const email = e.target.querySelector('input[type=email]').value;
-    submitEmail(email, 'final-success', e.target);
+    const nameInput = e.target.querySelector('input[type=text]');
+    const name = nameInput ? nameInput.value : '';
+    submitEmail(email, 'final-success', e.target, name);
   }
 
-  function submitEmail(email, successId, form) {
+  function submitEmail(email, successId, form, name) {
+    const payload = { email: email };
+    if (name) payload.name = name;
     fetch('https://formspree.io/f/xpqenozj', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email: email })
+      body: JSON.stringify(payload)
     }).then(function(res) {
       if (res.ok) {
         form.style.display = 'none';

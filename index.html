@@ -1443,28 +1443,20 @@
   }
 
   function submitEmail(email, successId, form) {
-    // Store in localStorage as a backup list
-    const list = JSON.parse(localStorage.getItem('finlo_leads') || '[]');
-    list.push({ email, date: new Date().toISOString() });
-    localStorage.setItem('finlo_leads', JSON.stringify(list));
-
-    // Show success
-    form.style.display = 'none';
-    document.getElementById(successId).classList.add('show');
-
-    // Also open a mailto to notify you
-    const subject = encodeURIComponent('Finlo Early Access Signup');
-    const body = encodeURIComponent('New signup: ' + email);
-    const mailto = `mailto:rupsamaji00@gmail.com?subject=${subject}&body=${body}`;
-    
-    // Silent background attempt
-    const a = document.createElement('a');
-    a.href = mailto;
-    a.style.display = 'none';
-    document.body.appendChild(a);
-    // Uncomment the next line if you want the email client to open:
-    // a.click();
-    document.body.removeChild(a);
+    fetch('https://formspree.io/f/xpqenozj', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: email })
+    }).then(function(res) {
+      if (res.ok) {
+        form.style.display = 'none';
+        document.getElementById(successId).classList.add('show');
+      } else {
+        alert('Something went wrong. Please try again.');
+      }
+    }).catch(function() {
+      alert('Something went wrong. Please try again.');
+    });
   }
 
   // Subtle scroll-reveal

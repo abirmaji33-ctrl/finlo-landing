@@ -1,13 +1,6 @@
 import Icon from './Icon';
 import { images, sample } from '../content';
 
-function initials(name: string) {
-  return name
-    .split(' ')
-    .map((p) => p[0])
-    .join('');
-}
-
 export default function HeroVisual() {
   return (
     <figure className="hero-visual" style={{ ['--scenery' as string]: `url(${images.heroScenery})` }}>
@@ -31,7 +24,7 @@ export default function HeroVisual() {
           <ul className="recent-list">
             {sample.recent.map((r, i) => (
               <li key={r.name} className={i === 0 ? 'is-active' : ''}>
-                <span className="avatar">{initials(r.name)}</span>
+                <img className="avatar" src={r.photo} alt="" width={32} height={32} />
                 <span>
                   <strong>{r.name}</strong>
                   <small>{r.meta}</small>
@@ -80,9 +73,9 @@ export default function HeroVisual() {
 
       <div className="call-window" aria-hidden="true">
         <div className="call-tiles">
-          <span className="tile tile-a">JL</span>
-          <span className="tile tile-b">IN</span>
-          <span className="tile tile-c">HM</span>
+          <img className="tile tile-a" src={images.faces.main} alt="" />
+          <img className="tile tile-b" src={images.faces.left} alt="" />
+          <img className="tile tile-c" src={images.faces.right} alt="" />
         </div>
         <div className="call-controls">
           <span>

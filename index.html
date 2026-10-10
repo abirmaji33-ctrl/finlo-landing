@@ -9,7 +9,7 @@
       content="Abrish AI is a concept for recruiters: stay in the conversation and leave with clear, structured interview notes. Early stage — we're looking for feedback."
     />
     <meta name="theme-color" content="#f8f6ef" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/png" href="/images/logo.png" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -18,6 +18,13 @@
     />
   </head>
   <body>
+    <!-- Netlify Forms reads this hidden form at deploy time. Field names must match src/components/Offer.tsx. -->
+    <form name="abrish-feedback" data-netlify="true" netlify-honeypot="bot-field" hidden>
+      <input name="answer" />
+      <input type="email" name="email" />
+      <textarea name="message"></textarea>
+      <input name="bot-field" />
+    </form>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>

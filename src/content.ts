@@ -1,16 +1,18 @@
 // All editable copy and placeholders live here.
-// Replace the two values below before sharing the page with anyone.
 
-/** Monthly price shown after the free first month. Replace with a real number, e.g. '$29'. */
-export const PRICE = '$[price]';
-
-/** Where answers are sent. Replace with a real address, e.g. 'you@yourdomain.com'. */
-export const CONTACT_EMAIL = '';
+/** Monthly price shown after the free first month. */
+export const PRICE = '$50';
 
 export const images = {
   heroScenery: '/images/hero-scenery.webp',
   howItWorks: '/images/how-it-works.webp',
   mobileNotes: '/images/mobile-notes.webp',
+  logo: '/images/logo.png',
+  faces: {
+    main: '/images/face-main.webp',
+    left: '/images/face-left.webp',
+    right: '/images/face-right.webp',
+  },
 };
 
 export const navItems = [
@@ -32,9 +34,9 @@ export const sample = {
   role: 'Product Designer',
   stage: 'First round interview',
   recent: [
-    { name: 'Jordan Lee', meta: 'Product Designer · today' },
-    { name: 'Taylor Kim', meta: 'Data Analyst · yesterday' },
-    { name: 'Sarah Brown', meta: 'Account Executive · Mon' },
+    { name: 'Jordan Lee', meta: 'Product Designer · today', photo: '/images/avatar-1.webp' },
+    { name: 'Taylor Kim', meta: 'Data Analyst · yesterday', photo: '/images/avatar-2.webp' },
+    { name: 'Sarah Brown', meta: 'Account Executive · Mon', photo: '/images/avatar-3.webp' },
   ],
   takeaways: [
     'Four years of design experience in B2B SaaS.',
@@ -66,7 +68,7 @@ export const roadmap = [
 ];
 
 export const feedbackQuestions = [
-  { id: 'yes', label: 'Yes, I would try it', subject: 'Abrish AI: yes, I would try it' },
-  { id: 'maybe', label: 'Maybe, I have questions', subject: 'Abrish AI: maybe, I have questions' },
-  { id: 'no', label: 'No, not for me', subject: 'Abrish AI: no, not for me' },
+  { id: 'yes', label: 'Yes, I would try it' },
+  { id: 'maybe', label: 'Maybe, I have questions' },
+  { id: 'no', label: 'No, not for me' },
 ];

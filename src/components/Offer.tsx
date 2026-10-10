@@ -1,12 +1,44 @@
+import { FormEvent, useState } from 'react';
 import Icon from './Icon';
-import { CONTACT_EMAIL, PRICE, feedbackQuestions } from '../content';
+import { PRICE, feedbackQuestions } from '../content';
 
-function mailto(subject: string) {
-  const body = encodeURIComponent('Hi, here is my answer to your question about Abrish AI.\n\nA bit more detail (optional):\n');
-  return `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(subject)}&body=${body}`;
+// Submissions are collected by Netlify Forms. The matching hidden form lives in index.html.
+const FORM_NAME = 'abrish-feedback';
+
+type Status = 'idle' | 'sending' | 'sent' | 'error';
+
+function encode(data: Record<string, string>) {
+  return new URLSearchParams(data).toString();
 }
 
 export default function Offer() {
+  const [choice, setChoice] = useState<string | null>(null);
+  const [status, setStatus] = useState<Status>('idle');
+
+  async function onSubmit(e: FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    const form = e.currentTarget;
+    const fd = new FormData(form);
+    setStatus('sending');
+    try {
+      const res = await fetch('/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: encode({
+          'form-name': FORM_NAME,
+          answer: choice ?? '',
+          email: String(fd.get('email') ?? ''),
+          message: String(fd.get('message') ?? ''),
+          'bot-field': String(fd.get('bot-field') ?? ''),
+        }),
+      });
+      if (!res.ok) throw new Error(String(res.status));
+      setStatus('sent');
+    } catch {
+      setStatus('error');
+    }
+  }
+
   return (
     <section className="section offer" id="offer" aria-labelledby="offer-title">
       <div className="offer-card">
@@ -31,23 +63,54 @@ export default function Offer() {
           </ul>
         </div>
 
-        <div className="offer-ask">
-          <h3>Would you try it?</h3>
-          <p>Pick one — it opens an email so you can add details.</p>
-          <div className="ask-buttons">
-            {feedbackQuestions.map((q) => (
-              <a key={q.id} className="button button-answer" href={mailto(q.subject)}>
-                {q.label}
-              </a>
-            ))}
-          </div>
-          <p className="ask-note">
-            {CONTACT_EMAIL ? (
-              <>Or write to {CONTACT_EMAIL}.</>
-            ) : (
-              <span className="placeholder-note">[your email goes here — set CONTACT_EMAIL in src/content.ts]</span>
-            )}
-          </p>
+        <div className="offer-ask" aria-live="polite">
+          {status === 'sent' ? (
+            <div className="ask-thanks">
+              <h3>Thank you.</h3>
+              <p>Your answer is in. We will get back to you at the email you gave.</p>
+            </div>
+          ) : choice === null ? (
+            <>
+              <h3>Would you try it?</h3>
+              <p>Pick one, then leave your email so we can reply.</p>
+              <div className="ask-buttons">
+                {feedbackQuestions.map((q) => (
+                  <button key={q.id} type="button" className="button button-answer" onClick={() => setChoice(q.label)}>
+                    {q.label}
+                  </button>
+                ))}
+              </div>
+              <p className="ask-note">We only use your email to reply about Abrish. No newsletters.</p>
+            </>
+          ) : (
+            <form className="ask-form" name={FORM_NAME} method="POST" onSubmit={onSubmit}>
+              <div className="ask-chosen">
+                <span>{choice}</span>
+                <button type="button" className="link-button" onClick={() => { setChoice(null); setStatus('idle'); }}>
+                  Change
+                </button>
+              </div>
+              <p className="hp-field" aria-hidden="true">
+                <label>
+                  Leave this empty <input name="bot-field" tabIndex={-1} autoComplete="off" />
+                </label>
+              </p>
+              <label>
+                Your email
+                <input type="email" name="email" required autoComplete="email" placeholder="you@company.com" />
+              </label>
+              <label>
+                Anything you'd like to add? (optional)
+                <textarea name="message" placeholder="What would make this useful for you?" />
+              </label>
+              {status === 'error' && (
+                <p className="ask-error">Sorry, that didn't send. Please try again in a moment.</p>
+              )}
+              <button type="submit" className="button button-primary" disabled={status === 'sending'}>
+                {status === 'sending' ? 'Sending…' : 'Send my answer'}
+              </button>
+            </form>
+          )}
         </div>
       </div>
     </section>

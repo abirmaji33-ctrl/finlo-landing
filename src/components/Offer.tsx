@@ -11,6 +11,15 @@ function encode(data: Record<string, string>) {
   return new URLSearchParams(data).toString();
 }
 
+// Reads ?ref=brandon (or any tag) from the page link so you can tell where a submission came from.
+function readRef() {
+  try {
+    return (new URLSearchParams(window.location.search).get('ref') ?? '').slice(0, 80);
+  } catch {
+    return '';
+  }
+}
+
 export default function Offer() {
   const [choice, setChoice] = useState<string | null>(null);
   const [status, setStatus] = useState<Status>('idle');
@@ -28,6 +37,8 @@ export default function Offer() {
           'form-name': FORM_NAME,
           answer: choice ?? '',
           email: String(fd.get('email') ?? ''),
+          linkedin: String(fd.get('linkedin') ?? '').trim().slice(0, 300),
+          ref: readRef(),
           message: String(fd.get('message') ?? ''),
           'bot-field': String(fd.get('bot-field') ?? ''),
         }),
@@ -47,8 +58,8 @@ export default function Offer() {
           <h2 id="offer-title">Would this help you run better interviews?</h2>
           <p className="section-lede">
             We are building Abrish with a small group of recruiters. If you join, you get the first month free. After
-            that the plan is <strong className="price">{PRICE}</strong> per month — and we want to know whether that
-            feels fair.
+            that the plan is <strong className="price">{PRICE}</strong> per user per month — and we want to know
+            whether that feels fair.
           </p>
           <ul className="offer-list">
             <li>
@@ -98,6 +109,10 @@ export default function Offer() {
               <label>
                 Your email
                 <input type="email" name="email" required autoComplete="email" placeholder="you@company.com" />
+              </label>
+              <label>
+                LinkedIn profile (optional)
+                <input type="text" name="linkedin" inputMode="url" autoComplete="url" placeholder="linkedin.com/in/your-name" />
               </label>
               <label>
                 Anything you'd like to add? (optional)
